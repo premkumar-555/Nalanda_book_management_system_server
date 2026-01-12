@@ -11,7 +11,7 @@ const logger = winston.createLogger({
     align(),
     printf(
       (info) =>
-        `[${info.timestamp}] ${info.level?.trim()}: ${info.message?.trim()}`
+        `[${new Date().toISOString()}] ${info.level?.trim()}: ${info.message?.trim()}`
     )
   ),
   transports: [new winston.transports.Console()],
