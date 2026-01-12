@@ -49,5 +49,9 @@ const bookSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
+// Indexes
+// schema level compound index on (title, author, genre)
+bookSchema.index({ title: 1, author: 1, genre: 1 });
+
 // book model
 module.exports = new mongoose.model("Book", bookSchema);

@@ -101,8 +101,67 @@ const deleteBookController = async (req, res) => {
   }
 };
 
+// Helper to prepare filter query to search books
+const prepareFilterQuery = (title = "", author = "", genre = "") => {
+  // Maintain filters order -> title, author, genre (to use compound index)
+  const filterQuery = { $or: [] };
+  if (title && title?.trim() !== "") {
+    filterQuery["$or"].push({
+      title: { $regex: title?.trim(), $options: "i" },
+    });
+  }
+  if (author && author?.trim() !== "") {
+    filterQuery["$or"].push({
+      author: { $regex: author?.trim(), $options: "i" },
+    });
+  }
+  const isGenreValid =
+    (genre && typeof genre === "string" && genre?.trim() !== "") ||
+    (genre && Array.isArray(genre) && genre?.length > 0);
+  if (isGenreValid) {
+    filterQuery["$or"].push({ genre: { $in: genre } });
+  }
+  return filterQuery?.$or?.length > 0 ? filterQuery : {};
+};
+
+// view books controller : /view
+const viewBooksController = async (req, res) => {
+  try {
+    // 1. Extract request query params
+    let { title, author, genre } = req.query;
+    genre = genre ? genre?.trim() : genre;
+    genre = genre?.includes(",")
+      ? genre?.split(",")?.map((el) => el?.trim())
+      : genre;
+    // 2. Prepare filter query
+    const filterQuery = prepareFilterQuery(title, author, genre);
+    // 3. pagination, limits
+    let { page, limit } = req.query;
+    limit =
+      limit && !isNaN(parseInt(limit)) && parseInt(limit) > 0
+        ? parseInt(limit)
+        : 50;
+    // Limit max default records to 50
+    limit = limit > 50 ? 50 : limit;
+    page =
+      page && !isNaN(parseInt(page)) && parseInt(page) > 0 ? parseInt(page) : 1;
+    const offset = (page - 1) * limit;
+    const books = await BookModel.find(filterQuery).skip(offset).limit(limit);
+    return sendResponse(200, { data: books }, res);
+  } catch (err) {
+    logger.error(`@ viewBooksController, error message : ${err?.message}`);
+    logger.error(`@ viewBooksController, error : ${JSON.stringify(err)}`);
+    return sendResponse(
+      500,
+      { error: true, message: err?.message || "Something went wrong!" },
+      res
+    );
+  }
+};
+
 module.exports = {
   addBookController,
   updateBookController,
   deleteBookController,
+  viewBooksController,
 };

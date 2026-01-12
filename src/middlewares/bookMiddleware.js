@@ -8,22 +8,24 @@ const { sendResponse } = require("../utils/interceptors");
 const ADMIN = "ADMIN";
 
 // Middleware to check whether user is admin or not
-const userRoleCheck = (req, res, next) => {
-  try {
-    const { role } = req.userInfo;
-    if (role !== ADMIN) {
-      return sendResponse(403, { message: "Permission denied!" }, res);
+const authorizeUser = (allowedUsers = []) => {
+  return (req, res, next) => {
+    try {
+      const { role } = req.userInfo;
+      if (!allowedUsers.includes(role)) {
+        return sendResponse(403, { message: "Permission denied!" }, res);
+      }
+      next();
+    } catch (err) {
+      logger.error(`@ authorizeUser, error message : ${err?.message}`);
+      logger.error(`@ authorizeUser, error : ${JSON.stringify(err)}`);
+      return sendResponse(
+        500,
+        { error: true, message: err?.message || "Something went wrong!" },
+        res
+      );
     }
-    next();
-  } catch (err) {
-    logger.error(`@ userRoleCheck, error message : ${err?.message}`);
-    logger.error(`@ userRoleCheck, error : ${JSON.stringify(err)}`);
-    return sendResponse(
-      500,
-      { error: true, message: err?.message || "Something went wrong!" },
-      res
-    );
-  }
+  };
 };
 
 // Helper to validate required fields
@@ -275,7 +277,7 @@ const updateBookPayloadCheck = (req, res, next) => {
 };
 
 module.exports = {
-  userRoleCheck,
+  authorizeUser,
   addBookPayloadCheck,
   updateBookPayloadCheck,
   checkValidBookId,
