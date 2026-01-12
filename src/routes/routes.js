@@ -5,6 +5,7 @@ const appRoutes = [
   { path: "/auth", route: require("./authRoute") },
   { path: "/book", route: require("./bookRoute") },
   { path: "/borrow", route: require("./borrowRoute") },
+  { path: "/reports", route: require("./reportsRoute") },
 ];
 
 // Method to initiate application routes

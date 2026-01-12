@@ -55,7 +55,4 @@ REST APIs :
 
 - Active Members: List the most active members based on borrowing history. - { userName : 'userName', totalBorrows : count }, sort in descending order by 'totalBorrows' (high to low count) ?
 
-- Book Availability: Provide a summary report of book availability in counts (total books, borrowed books,
-  available books).
-
-- last : view books api - is book borrowed by current loggedInUser
+- Book Availability: Provide a summary report of book availability in counts (total books, borrowed books, available books).
