@@ -1,4 +1,3 @@
-const { formatISO } = require("date-fns");
 const BookModel = require("../models/bookModel");
 const BorrowModel = require("../models/borrowModel");
 const { sendResponse } = require("../utils/interceptors");
@@ -83,7 +82,7 @@ const returnBookController = async (req, res) => {
         bookId,
         status: BORROWED,
       },
-      { status: RETURNED, returnedDate: formatISO(new Date()) },
+      { status: RETURNED, returnedDate: new Date().toISOString() },
       { new: true, select: { _id: 1 } }
     );
     if (!returnRes) {
