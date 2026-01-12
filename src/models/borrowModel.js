@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { BORROWED, RETURNED } = require("../utils/common");
 
 // borrow schema
 const borrowSchema = new mongoose.Schema(
@@ -30,7 +31,7 @@ const borrowSchema = new mongoose.Schema(
       type: String,
       required: true,
       trim: true,
-      enum: ["BORROWED", "RETURNED"],
+      enum: [BORROWED, RETURNED],
     },
   },
   { timestamps: true, versionKey: false }

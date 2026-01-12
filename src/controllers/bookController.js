@@ -1,7 +1,7 @@
 const BookModel = require("../models/bookModel");
+const { BORROWED } = require("../utils/common");
 const { sendResponse } = require("../utils/interceptors");
 const logger = require("../utils/logger");
-const BORROWED = "BORROWED";
 
 // add book controller : /add
 const addBookController = async (req, res) => {

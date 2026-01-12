@@ -15,8 +15,7 @@ const {
 } = require("../middlewares/bookMiddleware");
 const { userAuthMiddleware } = require("../middlewares/authMiddleware");
 const logger = require("../utils/logger");
-const ADMIN = "ADMIN";
-const MEMBER = "MEMBER";
+const { ADMIN, MEMBER } = require("../utils/common");
 
 // Add Book route : POST /add
 router.post(

@@ -12,9 +12,8 @@ const {
   validateBorrowId,
   validateViewBorrowHisoryPayload,
 } = require("../middlewares/borrowMiddleware");
+const { ADMIN, MEMBER } = require("../utils/common");
 const router = express.Router();
-const ADMIN = "ADMIN";
-const MEMBER = "MEMBER";
 
 // Borrow Book route: POST /create
 router.post(

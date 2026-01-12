@@ -1,7 +1,6 @@
 const { default: mongoose } = require("mongoose");
 const validator = require("validator");
 const { isValid } = require("date-fns");
-const UserModel = require("../models/userModel");
 const { checkReqFields, stringTypeLengthCheck } = require("./authMiddleware");
 const logger = require("../utils/logger");
 const { sendResponse } = require("../utils/interceptors");
