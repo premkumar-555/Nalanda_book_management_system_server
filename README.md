@@ -22,6 +22,7 @@ Books model : {
     publishedDate : required, 
     genre : required, 
     totalCopies : required
+    availableCopies : required
     }
 - Add Book: *Only admin can add new book  
 - Update Book: *Only admin can update book details

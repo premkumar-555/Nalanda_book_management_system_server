@@ -1,7 +1,10 @@
 const logger = require("../utils/logger");
 
 // All application routes store
-const appRoutes = [{ path: "/auth", route: require("./authRoute") }];
+const appRoutes = [
+  { path: "/auth", route: require("./authRoute") },
+  { path: "/book", route: require("./bookRoute") },
+];
 
 // Method to initiate application routes
 const initiateAppRoutes = (app) => {

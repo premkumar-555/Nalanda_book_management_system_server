@@ -34,6 +34,17 @@ const bookSchema = new mongoose.Schema(
       maxlength: 30,
     },
     totalCopies: { type: Number, required: true, min: 0 },
+    availableCopies: {
+      type: Number,
+      required: true,
+      min: 0,
+      validate: {
+        validator: function (value) {
+          return !(value > this.totalCopies);
+        },
+        message: "Available copies should be less than or equal to total",
+      },
+    },
   },
   { timestamps: true, versionKey: false }
 );

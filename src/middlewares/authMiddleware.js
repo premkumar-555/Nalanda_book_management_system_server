@@ -1,4 +1,5 @@
 const validator = require("validator");
+const jwt = require("jsonwebtoken");
 const userModel = require("../models/userModel");
 const logger = require("../utils/logger");
 const { sendResponse } = require("../utils/interceptors");
@@ -6,11 +7,11 @@ const { sendResponse } = require("../utils/interceptors");
 // helper to check required fields in req body (assuming all fields are strings)
 const checkReqFields = (reqFields, req) => {
   let errMsg = null;
-  const absentField = reqFields.find((item) => {
-    return req.body[item] === undefined || req.body[item] === "";
+  const absentField = Object.keys(reqFields)?.find((key) => {
+    return req.body[key] === undefined || req.body[key] === "";
   });
   if (absentField) {
-    errMsg = `${absentField} is required!`;
+    errMsg = `${reqFields[absentField]} is required!`;
   }
   return errMsg;
 };
@@ -67,7 +68,11 @@ const signupPayloadCheck = (req, res, next) => {
     // payload validations order
     // 1. check required fields
     // 2. validate field values
-    const requiredFields = ["name", "email", "password"];
+    const requiredFields = {
+      name: "Name",
+      email: "EmailId",
+      password: "Password",
+    };
     const errMsg =
       checkReqFields(requiredFields, req) ||
       stringTypeLengthCheck({
@@ -100,7 +105,10 @@ const loginPayloadCheck = (req, res, next) => {
     // payload validations order
     // 1. check required fields
     // 2. validate field values
-    const requiredFields = ["email", "password"];
+    const requiredFields = {
+      email: "EmailId",
+      password: "Password",
+    };
     const errMsg =
       checkReqFields(requiredFields, req) ||
       checkEmailPasswordValues(req) ||
@@ -156,4 +164,7 @@ const userAuthMiddleware = async (req, res, next) => {
 module.exports = {
   signupPayloadCheck,
   loginPayloadCheck,
+  userAuthMiddleware,
+  checkReqFields,
+  stringTypeLengthCheck,
 };
