@@ -1,6 +1,7 @@
 const BookModel = require("../models/bookModel");
 const { sendResponse } = require("../utils/interceptors");
 const logger = require("../utils/logger");
+const BORROWED = "BORROWED";
 
 // add book controller : /add
 const addBookController = async (req, res) => {
@@ -124,6 +125,35 @@ const prepareFilterQuery = (title = "", author = "", genre = "") => {
   return filterQuery?.$or?.length > 0 ? filterQuery : {};
 };
 
+// Helper to prepare aggregate query to view books
+const prepareViewBooksAggQuery = (
+  filterQuery = {},
+  offset = 0,
+  limit = 50,
+  req
+) => {
+  return [
+    { $match: filterQuery },
+    { $skip: offset },
+    { $limit: limit },
+    {
+      $lookup: {
+        from: "borrows",
+        localField: "_id",
+        foreignField: "bookId",
+        pipeline: [
+          { $match: { userId: req?.userInfo?._id, status: BORROWED } },
+          { $set: { isBorrowed: true } },
+          { $project: { isBorrowed: 1, _id: 0 } },
+        ],
+        as: "borrowed",
+      },
+    },
+    { $unwind: { path: "$borrowed", preserveNullAndEmptyArrays: true } },
+    { $set: { borrowed: "$borrowed.isBorrowed" } },
+  ];
+};
+
 // view books controller : /view
 const viewBooksController = async (req, res) => {
   try {
@@ -146,8 +176,14 @@ const viewBooksController = async (req, res) => {
     page =
       page && !isNaN(parseInt(page)) && parseInt(page) > 0 ? parseInt(page) : 1;
     const offset = (page - 1) * limit;
-    const books = await BookModel.find(filterQuery).skip(offset).limit(limit);
-    return sendResponse(200, { data: books }, res);
+    const viewAggregateQuery = prepareViewBooksAggQuery(
+      filterQuery,
+      offset,
+      limit,
+      req
+    );
+    const booksRes = await BookModel.aggregate(viewAggregateQuery);
+    return sendResponse(200, { data: booksRes }, res);
   } catch (err) {
     logger.error(`@ viewBooksController, error message : ${err?.message}`);
     logger.error(`@ viewBooksController, error : ${JSON.stringify(err)}`);

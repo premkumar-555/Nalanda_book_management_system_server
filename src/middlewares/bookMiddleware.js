@@ -5,10 +5,9 @@ const UserModel = require("../models/userModel");
 const { checkReqFields, stringTypeLengthCheck } = require("./authMiddleware");
 const logger = require("../utils/logger");
 const { sendResponse } = require("../utils/interceptors");
-const ADMIN = "ADMIN";
 
 // Middleware to check whether user is admin or not
-const authorizeUser = (allowedUsers = []) => {
+const authorizeUserRole = (allowedUsers = []) => {
   return (req, res, next) => {
     try {
       const { role } = req.userInfo;
@@ -17,8 +16,8 @@ const authorizeUser = (allowedUsers = []) => {
       }
       next();
     } catch (err) {
-      logger.error(`@ authorizeUser, error message : ${err?.message}`);
-      logger.error(`@ authorizeUser, error : ${JSON.stringify(err)}`);
+      logger.error(`@ authorizeUserRole, error message : ${err?.message}`);
+      logger.error(`@ authorizeUserRole, error : ${JSON.stringify(err)}`);
       return sendResponse(
         500,
         { error: true, message: err?.message || "Something went wrong!" },
@@ -277,7 +276,7 @@ const updateBookPayloadCheck = (req, res, next) => {
 };
 
 module.exports = {
-  authorizeUser,
+  authorizeUserRole,
   addBookPayloadCheck,
   updateBookPayloadCheck,
   checkValidBookId,

@@ -36,5 +36,9 @@ const borrowSchema = new mongoose.Schema(
   { timestamps: true, versionKey: false }
 );
 
+// Indexes
+// schema level compound index on (userId, bookId, bookId)
+borrowSchema.index({ userId: 1, bookId: 1, bookId: 1 });
+
 // borrow model
 module.exports = new mongoose.model("Borrow", borrowSchema);

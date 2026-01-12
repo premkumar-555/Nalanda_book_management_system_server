@@ -8,7 +8,7 @@ const {
   viewBooksController,
 } = require("../controllers/bookController");
 const {
-  authorizeUser,
+  authorizeUserRole,
   addBookPayloadCheck,
   updateBookPayloadCheck,
   checkValidBookId,
@@ -22,7 +22,7 @@ const MEMBER = "MEMBER";
 router.post(
   "/add",
   userAuthMiddleware,
-  authorizeUser([ADMIN]),
+  authorizeUserRole([ADMIN]),
   addBookPayloadCheck,
   addBookController
 );
@@ -31,7 +31,7 @@ router.post(
 router.get(
   "/view",
   userAuthMiddleware,
-  authorizeUser([ADMIN, MEMBER]),
+  authorizeUserRole([ADMIN, MEMBER]),
   viewBooksController
 );
 
@@ -39,7 +39,7 @@ router.get(
 router.patch(
   "/update/:id",
   userAuthMiddleware,
-  authorizeUser([ADMIN]),
+  authorizeUserRole([ADMIN]),
   checkValidBookId,
   updateBookPayloadCheck,
   updateBookController
@@ -49,7 +49,7 @@ router.patch(
 router.delete(
   "/delete/:id",
   userAuthMiddleware,
-  authorizeUser([ADMIN]),
+  authorizeUserRole([ADMIN]),
   checkValidBookId,
   deleteBookController
 );
