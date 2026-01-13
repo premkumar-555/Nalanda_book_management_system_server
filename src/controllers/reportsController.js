@@ -23,6 +23,13 @@ const viewMostBorrowedBooksController = async (req, res) => {
         },
       },
       { $unwind: { path: "$book", preserveNullAndEmptyArrays: true } },
+      {
+        $addFields: {
+          book: {
+            $ifNull: ["$book", "$_id"],
+          },
+        },
+      },
       { $project: { _id: 0 } },
     ]);
     return sendResponse(200, { data: booksBorrowReport }, res);
