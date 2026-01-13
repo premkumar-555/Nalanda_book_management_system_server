@@ -56,7 +56,7 @@ A comprehensive backend server for a library management application with RESTful
 1. **Clone repository**
 
 ```bash
-git clone <https://github.com/premkumar-555/Nalanda_book_management_system_server.git>
+git clone https://github.com/premkumar-555/Nalanda_book_management_system_server.git
 
 ```
 
