@@ -1,58 +1,161 @@
-# Nalanda_book_management_system
+# Nalanda Library Management System
 
-A NodeJs server application to manage the books borrowing and related processes.
+[API Documentation](https://documenter.getpostman.com/view/18702151/2sBXVfkXDo).
 
-REST APIs :
+A comprehensive backend server for a library management application with RESTful APIs built with Node.js, Express, and MongoDB etc.
 
-1. User Management:
-   Users model : {
-   name : required,
-   email : required, uniqueIndex
-   password : required,
-   role : ['admin', 'member'] default : 'member'
-   }
+## Features
+
+**User Management**
 
 - User Registration : using {name, email, password}
 - User Login: using {email, password}
 - admin has all accesses, while member has restricted accesses
 
-2. Book Management:
-   Books model : {
-   title : required,
-   author : required,
-   isbn : required, uniqueIndex,
-   publishedDate : required,
-   genre : required,
-   totalCopies : required
-   availableCopies : required
-   }
+  **Book Management**
 
-- Add Book: \*Only admin can add new book
-- Update Book: \*Only admin can update book details
-- Delete Book: \*Only admin can delete book from the library.
-- List Books: \*All users can view list of books + pagination(default 1) + filtering(by title, author, genre) + limit (default 50, if not given) ==> POST API : filter body
-  {
-  search : 'book or author',
-  genre : ['comedy', 'horror'...]
-  }
+- Add Book: Only admin can add new book
+- Update Book: Only admin can update book details
+- Delete Book: Only admin can delete book from the library.
+- view/List Books: All users can view list of books + optional pagination + optional filtering(by title, author, genre) + optional limitation (default 50, if not given)
 
-3. Borrowing System:
-   borrowing model : {
-   userId,
-   bookId,
-   borrowedAt,
-   returnedAt,
-   status : BORROWED OR RETURNED
-   }
+  **Borrowing System**
 
 - Borrow Book: Members can borrow a book. Ensure the book is available (copies > 0)
 - Return Book: Members can return a borrowed book.
 - Borrow History: Members can view their borrowing history
 
-4. Reports and Aggregations:
+  **Reports & Analytics**
 
-- Most Borrowed Books: Generate a report of the most borrowed books. - { title : 'bookName', totalBorrows : count }, sort in descending order by 'totalBorrows' (high to low count) ?
+- Most Borrowed Books: Report of the most borrowed books.
+- Active Members: Report of the most active members based on borrowing history.
+- Book Availability: Summary report of total books availability in counts (total books, borrowed books, available books).
 
-- Active Members: List the most active members based on borrowing history. - { userName : 'userName', totalBorrows : count }, sort in descending order by 'totalBorrows' (high to low count) ?
+  **Security**
 
-- Book Availability: Provide a summary report of book availability in counts (total books, borrowed books, available books).
+- Encrypted JWT tokens, with expiry duration 1 day
+- Password hashing with bcrypt
+- Role-based authorization for members and admins
+- Input validation on all endpoints
+- Compound indexes at required fields
+- Secured/Hidden credentials using .env
+
+## 📊 Project Structure
+
+![Project Structure](./project-structure.svg)
+
+## Installation & Setup
+
+### Prerequisites
+
+- Node.js (v22.20.0)
+- npm or yarn
+
+### Steps
+
+1. **Clone repository**
+
+```bash
+git clone <https://github.com/hemanth5544/nalanda.git>
+
+```
+
+2. **Install dependencies**
+
+```bash
+npm install
+```
+
+3. **Configure environment variables**
+   Create `.env` file:
+
+```
+DB_URL=mongodb://localhost:27017/library_db
+PORT=3000
+JWT_PRIVATE_KEY=''
+```
+
+4. **Run development server**
+
+```bash
+npm run dev
+```
+
+5. **Run server with build**
+
+```bash
+npm start
+```
+
+Server runs on `http://localhost:3000`
+
+## API Endpoints
+
+### Authentication
+
+| Method | Endpoint           | Description       |
+| ------ | ------------------ | ----------------- |
+| POST   | `/api/auth/signup` | Register new user |
+| POST   | `/api/auth/login`  | User login        |
+
+### Books
+
+| Method | Endpoint               | Description    | Role         |
+| ------ | ---------------------- | -------------- | ------------ |
+| GET    | `/api/book/view`       | List all books | Member/Admin |
+| POST   | `/api/book/add`        | Add new book   | Admin        |
+| PATCH  | `/api/book/update/:id` | Update book    | Admin        |
+| DELETE | `/api/book/delete/:id` | Delete book    | Admin        |
+
+### Borrowing
+
+| Method | Endpoint                           | Description        | Role         |
+| ------ | ---------------------------------- | ------------------ | ------------ |
+| POST   | `/api/borrow/create`               | Borrow book        | Member/Admin |
+| POST   | `/api/borrow/return`               | Return book        | Member/Admin |
+| GET    | `/api/borrow/view/history/:userId` | Get borrow history | Member/Admin |
+
+### Reports
+
+| Method | Endpoint                                 | Description              | Role  |
+| ------ | ---------------------------------------- | ------------------------ | ----- |
+| GET    | `/api/reports/books/mostBorrowed`        | Most borrowed books      | Admin |
+| GET    | `/api/reports/members/mostActive`        | Active members list      | Admin |
+| GET    | `/api/reports/books/availabilitySummary` | Book availability report | Admin |
+
+## Role-Based Access Control
+
+**Member Role:**
+
+- View all books
+- Search & filter books
+- Borrow and return books
+- View his borrowing history
+
+**Admin Role:**
+
+- All member permissions
+- Add, update, delete books
+- View borrowing records of his or any authorized user
+- Access all reports & analytics
+
+## Error Handling
+
+All endpoints return consistent error responses:
+
+```json
+{
+  "error": true,
+  "message": "Error description",
+  "data": {}
+}
+```
+
+Status codes:
+
+- `200`: Successful response
+- `400`: Validation error
+- `401`: Auth denied
+- `403`: Permission denied
+- `409`: Resource not found / Duplicate Records
+- `500`: Internal server error
