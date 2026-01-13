@@ -2,7 +2,7 @@ const BookModel = require("../models/bookModel");
 const BorrowModel = require("../models/borrowModel");
 const { sendResponse } = require("../utils/interceptors");
 const logger = require("../utils/logger");
-const { BORROWED, RETURNED } = require("../utils/common");
+const { BORROWED, RETURNED, MEMBER } = require("../utils/common");
 
 // borrow new book controller : /create
 const borrowBookController = async (req, res) => {
@@ -122,7 +122,19 @@ const returnBookController = async (req, res) => {
 const viewBorrowHistoryController = async (req, res) => {
   try {
     const { userId } = req?.params || {};
-    const borrowHistory = await BorrowModel.find({ userId }).populate("bookId");
+    // Handle role wise filter
+    let filterObj = {};
+    // 1. If user is MEMBER, allow to view only their own borrow history
+    if (req?.userInfo?.role === MEMBER) {
+      filterObj.userId = req?.userInfo?._id;
+    }
+    // 2. If user is ADMIN, allow to view required user's borrow history
+    if (req?.userInfo?.role === ADMIN) {
+      filterObj.userId = userId;
+    }
+    const borrowHistory = await BorrowModel.find({ ...filterObj }).populate(
+      "bookId"
+    );
     return sendResponse(200, { data: borrowHistory }, res);
   } catch (err) {
     logger.error(
