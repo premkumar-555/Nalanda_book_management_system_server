@@ -15,7 +15,7 @@ const router = express.Router();
 router.get(
   "/books/mostBorrowed",
   userAuthMiddleware,
-  authorizeUserRole([ADMIN, MEMBER]),
+  authorizeUserRole([ADMIN]),
   viewMostBorrowedBooksController
 );
 
@@ -23,7 +23,7 @@ router.get(
 router.get(
   "/members/mostActive",
   userAuthMiddleware,
-  authorizeUserRole([ADMIN, MEMBER]),
+  authorizeUserRole([ADMIN]),
   viewMostActiveMembersController
 );
 
@@ -31,7 +31,7 @@ router.get(
 router.get(
   "/books/availabilitySummary",
   userAuthMiddleware,
-  authorizeUserRole([ADMIN, MEMBER]),
+  authorizeUserRole([ADMIN]),
   viewBooksSummaryController
 );
 
