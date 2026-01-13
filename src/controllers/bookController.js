@@ -118,7 +118,8 @@ const prepareFilterQuery = (title = "", author = "", genre = "") => {
   }
   const isGenreValid =
     (genre && typeof genre === "string" && genre?.trim() !== "") ||
-    (genre && Array.isArray(genre) && genre?.length > 0);
+    (genre && Array.isArray(genre) && genre?.length > 0) ||
+    null;
   if (isGenreValid) {
     filterQuery["$or"].push({ genre: { $in: genre } });
   }
@@ -159,10 +160,16 @@ const viewBooksController = async (req, res) => {
   try {
     // 1. Extract request query params
     let { title, author, genre } = req.query;
-    genre = genre ? genre?.trim() : genre;
+    genre = genre && !!genre?.trim() ? genre?.trim() : null;
     genre = genre?.includes(",")
-      ? genre?.split(",")?.map((el) => el?.trim())
-      : genre;
+      ? genre?.split(",")?.map((el) => {
+          if (!!el?.trim()) {
+            return el?.trim();
+          }
+        })
+      : genre
+      ? [genre]
+      : null;
     // 2. Prepare filter query
     const filterQuery = prepareFilterQuery(title, author, genre);
     // 3. pagination, limits
