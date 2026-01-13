@@ -89,8 +89,10 @@ npm start
 
 Server runs on `http://localhost:3000`
 
-## API Endpoints
+### Deployment
+**AWS - EC2 Instance, Ubuntu(OS), NgInx(HTTP-SERVER), PM2(Node Process Manager)**
 
+### API Endpoints
 ### Authentication
 
 | Method | Endpoint           | Description       |
