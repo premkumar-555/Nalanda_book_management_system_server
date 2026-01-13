@@ -14,7 +14,7 @@ REST APIs :
 
 - User Registration : using {name, email, password}
 - User Login: using {email, password}
-- - admin has all accesses, while member has restricted accesses
+- admin has all accesses, while member has restricted accesses
 
 2. Book Management:
    Books model : {

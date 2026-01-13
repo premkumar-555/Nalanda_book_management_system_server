@@ -2,10 +2,10 @@
   "name": "nalanda_book_management_system_server",
   "version": "1.0.0",
   "description": "A NodeJs server application to manage the books borrowing and related processes.",
-  "main": "index.js",
+  "main": "src/index.js",
   "scripts": {
-    "dev": "nodemon index.js",
-    "start": "node index.js",
+    "dev": "nodemon src/index.js",
+    "start": "node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "repository": {
@@ -30,5 +30,8 @@
     "mongoose": "^9.1.2",
     "validator": "^13.15.26",
     "winston": "^3.19.0"
+  },
+  "devDependencies": {
+    "dependency-cruiser": "^17.3.6"
   }
 }

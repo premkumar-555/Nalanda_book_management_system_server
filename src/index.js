@@ -6,9 +6,9 @@ const cookieParser = require("cookie-parser");
 require("dotenv").config();
 
 const port = process.env.PORT || 3000;
-const connect = require("./src/config/dbConfig");
-const { initiateAppRoutes } = require("./src/routes/routes");
-const logger = require("./src/utils/logger");
+const connect = require("./config/dbConfig");
+const { initiateAppRoutes } = require("./routes/routes");
+const logger = require("./utils/logger");
 
 // set app cors policies (enabling for All CORS requests)
 app.use(cors());

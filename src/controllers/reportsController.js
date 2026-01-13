@@ -106,7 +106,14 @@ const viewBooksSummaryController = async (req, res) => {
         },
       },
     ]);
-    return sendResponse(200, { data: booksAvailabilitySummary }, res);
+    const resData = booksAvailabilitySummary[0]
+      ? booksAvailabilitySummary[0]
+      : {
+          totalBooks: 0,
+          totalAvailableBooks: 0,
+          totalBorrowedBooks: 0,
+        };
+    return sendResponse(200, { data: resData }, res);
   } catch (err) {
     logger.error(
       `@ viewBooksSummaryController, error message : ${err?.message}`
