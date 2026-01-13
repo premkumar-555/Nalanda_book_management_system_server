@@ -2,7 +2,7 @@ const BookModel = require("../models/bookModel");
 const BorrowModel = require("../models/borrowModel");
 const { sendResponse } = require("../utils/interceptors");
 const logger = require("../utils/logger");
-const { BORROWED, RETURNED, MEMBER } = require("../utils/common");
+const { BORROWED, RETURNED, MEMBER, ADMIN } = require("../utils/common");
 
 // borrow new book controller : /create
 const borrowBookController = async (req, res) => {
